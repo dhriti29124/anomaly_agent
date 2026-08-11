@@ -9,6 +9,12 @@ def load_raw_data(path: str) -> pd.DataFrame:
     df["InvoiceDate"] = pd.to_datetime(df["InvoiceDate"])
     return df
 
+def clean_sales_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Keep only real sales, and compute a Revenue column (Quantity x Price)."""
+    sales_df = df[df["RowType"] == "sale"].copy()
+    sales_df["Revenue"] = sales_df["Quantity"] * sales_df["Price"]
+    return sales_df
+
 
 def categorize_invoices(df: pd.DataFrame) -> pd.DataFrame:
     is_cancellation = df["Invoice"].astype(str).str.startswith("C")
@@ -26,3 +32,11 @@ if __name__ == "__main__":
     df = load_raw_data("online_retail_II.csv")
     df = categorize_invoices(df)
     print(df["RowType"].value_counts())
+
+    sales_df = clean_sales_data(df)
+    print()
+    print("Sales rows:", len(sales_df))
+    print(sales_df[["Invoice", "Quantity", "Price", "Revenue"]].head())
+
+
+
