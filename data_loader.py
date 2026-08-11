@@ -15,6 +15,19 @@ def clean_sales_data(df: pd.DataFrame) -> pd.DataFrame:
     sales_df["Revenue"] = sales_df["Quantity"] * sales_df["Price"]
     return sales_df
 
+def aggregate_to_daily(df: pd.DataFrame) -> pd.DataFrame:
+    """Group sales data into one row per day with daily totals."""
+    df["Date"] = df["InvoiceDate"].dt.date
+
+    daily_df = df.groupby("Date").agg(
+        Revenue=("Revenue", "sum"),
+        Orders=("Invoice", "nunique"),
+        Quantity=("Quantity", "sum"),
+    ).reset_index()
+
+    daily_df["Date"] = pd.to_datetime(daily_df["Date"])
+    return daily_df
+
 
 def categorize_invoices(df: pd.DataFrame) -> pd.DataFrame:
     is_cancellation = df["Invoice"].astype(str).str.startswith("C")
@@ -36,7 +49,13 @@ if __name__ == "__main__":
     sales_df = clean_sales_data(df)
     print()
     print("Sales rows:", len(sales_df))
-    print(sales_df[["Invoice", "Quantity", "Price", "Revenue"]].head())
+
+    daily_df = aggregate_to_daily(sales_df)
+    print()
+    print("Daily rows:", len(daily_df))
+    print(daily_df.head(10))
+    print()
+    print(daily_df.describe())
 
 
 
