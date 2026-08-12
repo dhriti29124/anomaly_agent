@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-def detect_anomalies_weekday_aware(daily_df: pd.DataFrame, metric: str, window: int = 4, z_threshold: float = 2.0) -> pd.DataFrame:
+def detect_anomalies_weekday_aware(daily_df: pd.DataFrame, metric: str, window: int = 8, z_threshold: float = 2.5) -> pd.DataFrame:
     """Flag anomalous days by comparing each day only to the same weekday in recent weeks.
 
     Uses shift(1) before rolling so that today's own value is never included
@@ -28,6 +28,20 @@ def detect_anomalies_weekday_aware(daily_df: pd.DataFrame, metric: str, window: 
     return df
 
 
+def detect_anomalies_all_metrics(daily_df: pd.DataFrame, metrics: list, window: int = 8, z_threshold: float = 2.5) -> pd.DataFrame:
+    """Run weekday-aware anomaly detection across multiple metrics."""
+    result = daily_df.copy()
+    result["DayOfWeek"] = result["Date"].dt.day_name()
+
+    for metric in metrics:
+        metric_result = detect_anomalies_weekday_aware(daily_df, metric, window=window, z_threshold=z_threshold)
+        result[f"{metric}_zscore"] = metric_result[f"{metric}_zscore"]
+        result[f"{metric}_anomaly"] = metric_result[f"{metric}_anomaly"]
+
+    result["AnyAnomaly"] = result[[f"{m}_anomaly" for m in metrics]].any(axis=1)
+    return result
+
+
 if __name__ == "__main__":
     from data_loader import load_raw_data, categorize_invoices, clean_sales_data, aggregate_to_daily
 
@@ -36,16 +50,10 @@ if __name__ == "__main__":
     sales_df = clean_sales_data(df)
     daily_df = aggregate_to_daily(sales_df)
 
-    print("--- Weekday-aware detection ---")
-    result = detect_anomalies_weekday_aware(daily_df, "Revenue", window=8, z_threshold=2.5)
-    flagged = result[result["Revenue_anomaly"]]
-    print(f"Flagged {len(flagged)} anomalous days out of {len(result)}")
-    print(flagged[["Date", "DayOfWeek", "Revenue", "Revenue_zscore"]])
+    result = detect_anomalies_all_metrics(daily_df, ["Revenue", "Orders", "Quantity"])
 
-
-    early_cutoff = pd.Timestamp("2010-02-01")
-early_flagged = flagged[flagged["Date"] < early_cutoff]
-later_flagged = flagged[flagged["Date"] >= early_cutoff]
-print(f"Flagged in burn-in period (before Feb 2010): {len(early_flagged)}")
-print(f"Flagged after burn-in period: {len(later_flagged)}")
-print(f"Later-period flag rate: {len(later_flagged) / len(result[result['Date'] >= early_cutoff]) * 100:.1f}%")
+    flagged = result[result["AnyAnomaly"]]
+    print(f"Flagged {len(flagged)} days out of {len(result)} (any metric)")
+    print()
+    cols = ["Date", "DayOfWeek", "Revenue_anomaly", "Orders_anomaly", "Quantity_anomaly"]
+    print(flagged[cols])
