@@ -37,7 +37,7 @@ if __name__ == "__main__":
     daily_df = aggregate_to_daily(sales_df)
 
     print("--- Weekday-aware detection ---")
-    result = detect_anomalies_weekday_aware(daily_df, "Revenue", window=8)
+    result = detect_anomalies_weekday_aware(daily_df, "Revenue", window=8, z_threshold=2.5)
     flagged = result[result["Revenue_anomaly"]]
     print(f"Flagged {len(flagged)} anomalous days out of {len(result)}")
     print(flagged[["Date", "DayOfWeek", "Revenue", "Revenue_zscore"]])
