@@ -1,4 +1,5 @@
-# AI Anomaly Agent
+# AI Anomaly Agent: Python based Data analytics automation project 
+
 
 A tool that reads real e-commerce transaction data, cleans it, detects
 statistically unusual days in daily business metrics, and generates a
@@ -81,10 +82,10 @@ ALERT_TO=teammate@company.com
 
 ## Known limitations
 
-- The detector flags *statistically* unusual days — it doesn't judge
+- The detector flags *statistically* unusual days it doesn't judge
   whether unusual is good or bad. A growing business will keep beating
   its own rolling baseline, which shows up as frequent "anomalies" that
   are actually just growth. A human still has to read the summary and
   decide if it matters.
-- No live scheduling yet — this runs once per invocation. Could be
+- No live scheduling yet this runs once per invocation. Could be
   extended with cron/Task Scheduler for a real daily "watcher."
