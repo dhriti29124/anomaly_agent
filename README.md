@@ -10,7 +10,7 @@ plain-English alert explaining what changed and why it might matter.
 1. Loads raw transaction data (Online Retail II, UCI/Kaggle — ~1M rows,
    2009–2011, real UK online retailer)
 2. Classifies every row as a real sale, a cancellation, a bad-debt
-   adjustment, or a manual stock correction — and filters to real sales only
+   adjustment, or a manual stock correction and filters to real sales only
 3. Aggregates transactions into daily metrics: Revenue, Orders, Quantity
 4. Detects anomalies using a weekday-aware rolling z-score (compares each
    day only to the same weekday in recent weeks, so Sundays aren't
