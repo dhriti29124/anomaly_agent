@@ -39,7 +39,7 @@ pip install pandas openpyxl numpy
 ```
 
 Download the dataset from [Kaggle: Online Retail II (UCI)](https://www.kaggle.com/datasets/mashlyn/online-retail-ii-uci)
-and place `online_retail_II.csv` in this folder (not committed to Git —
+and place `online_retail_II.csv` in this folder (not committed to Git
 see `.gitignore`).
 
 ## Run it
