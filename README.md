@@ -1,4 +1,4 @@
-# AI Anomaly Agent: Python based Data analytics automation project 
+# AI Anomaly Agent: Python based Data analytics Automation Project 
 
 
 A tool that reads real e-commerce transaction data, cleans it, detects
