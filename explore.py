@@ -1,5 +1,5 @@
 import pandas as pd
-# load the data 
+# load the data
 
 def load_data(path: str) -> pd.DataFrame:
     """Load the raw CSV and parse the date column."""
