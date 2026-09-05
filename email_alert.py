@@ -20,7 +20,7 @@ def build_email_html(summaries: list, flagged_count: int, total_days: int) -> st
     </body></html>
     """
 
-
+# the function for sending the alert 
 def send_alert(html: str, subject: str = "⚠️ Metric Anomaly Detected"):
     """Send the alert email, or write a local preview if no SMTP credentials are set."""
     host = os.environ.get("SMTP_HOST")
