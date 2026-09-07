@@ -1,5 +1,5 @@
 # for this we will find the customer id with C and A and price === 0 
-import pandas as pd
+import panda as pd 
 import numpy as np
 
 
