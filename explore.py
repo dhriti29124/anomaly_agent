@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd 
 # load the data
 
 def load_data(path: str) -> pd.DataFrame:
